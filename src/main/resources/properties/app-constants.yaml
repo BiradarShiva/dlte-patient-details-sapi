@@ -1,0 +1,5 @@
+sfdc:
+  object: "Patient_Profile__c"
+  viewpatientsquery: "SELECT Name, PatientId__c, Age__c, Gender__c, PhoneNumber__c, EMail__c FROM patient_profile__c"
+  viewpatientquery: "SELECT Id, Name, PatientId__c, Age__c, Gender__c, PhoneNumber__c, EMail__c FROM patient_profile__c WHERE PatientId__c=':patientId'"
+  uniqueidquery: "SELECT Id, Name FROM patient_profile__c WHERE PatientId__c=':patientId'"

@@ -1,0 +1,81 @@
+#%RAML 1.0
+title: dlte-patient-details-sapi
+version: v1
+mediaType: application/json
+protocols: [ HTTP ]
+
+traits:
+  Errorable: !include common/traits/errorable.raml
+  Trackable: !include common/traits/trackable.raml
+types:
+  create-patient-request: !include data-types/createPatientRequest.raml
+  view-patient: !include data-types/viewPatientsResponse.raml
+  
+/patientprofiles:
+  /patient:
+    post:
+      is: [ Errorable, Trackable ]
+      body:
+        application/json:
+          type: create-patient-request[]
+          example: !include examples/create-patient-request.json
+      responses:
+        201:
+          description: patient record is created successfully.
+          body:
+            application/json:
+              type: object
+              example: !include examples/create-patient-response.json
+  /patients:
+    get:
+      is: [ Errorable, Trackable ]
+      responses:
+        200:
+          description: All patient records are retrieved successfully.
+          body:
+            application/json:
+              type: view-patient[]
+              example: !include examples/view-all-patients.json
+    /patient/{patientId}:
+      get: 
+        is: [ Errorable, Trackable ]
+        responses:
+          200:
+            description: Patient record is retrieved by patient Id.
+            body:
+              application/json:
+                type: view-patient
+                example: !include examples/view-patient.json
+  /patient/{patientId}/phonenumber:
+      patch:
+        is: [ Errorable, Trackable ]
+        queryParameters:
+          phoneNumber:
+            type: number
+            required: false
+        responses:
+          201:
+            description: Patient record is updated with the help of patient Id.
+            body:
+              application/json:
+                example: !include examples/update-patient-response.json
+  /patient/{patientId}:
+      delete:
+        is: [ Errorable, Trackable ]
+        responses:
+          200:
+            description: Patient record is deleted.
+            body:
+              application/json:
+                type: object
+                example: 
+                    {
+                      "message" : "Deleted Successfully"
+                    }                   
+      
+                  
+
+        
+            
+                
+

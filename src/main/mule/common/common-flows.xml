@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<sub-flow name="retrieve-unique-id-subflow" doc:id="41f4074b-dace-4e3f-a7f3-6a16702c79e0" >
+		<logger level="INFO" doc:name="Log Request" doc:id="55ba96fb-91fe-4f4d-ad4a-779633b66e01" message="Log Request :: #[payload]"/>
+		<salesforce:query doc:name="Retrieving Unique Id" doc:id="53b53949-fd2a-4432-80a7-557e47fef370" config-ref="apiSalesforceConfig">
+			<salesforce:salesforce-query><![CDATA[${sfdc.uniqueidquery}]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"patientId" : attributes.uriParams.patientId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<logger level="INFO" doc:name="Logger" doc:id="c13cb77c-4c33-4d35-9e8a-55556b654a03" message="#[payload]"/>
+		<flow-ref doc:name="Invoke Check ID Flow" doc:id="91263c07-4f11-4383-b7e1-0392e4ce83b1" name="common-flow-check-id-flow"/>
+		<logger level="INFO" doc:name="Log Response" doc:id="453c2354-c70f-425c-b7ca-2855e92eb859" message="Log Response :: #[payload]"/>
+	</sub-flow>
+	<flow name="common-flow-check-id-flow" doc:id="603126ac-d156-4950-b1b9-430c50b71df9" >
+		<choice doc:name="Choice" doc:id="dc1cb486-248d-4a2c-9c2e-c8fe3222a925" >
+			<when expression="#[isEmpty(payload)]">
+				<raise-error doc:name="No ID Found" doc:id="4af284ac-6bc0-4fb7-9288-2d0bf19e8077" type="APP:NO_ID_FOUND"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Log Default" doc:id="e88bb744-43b5-40ee-89c2-793720b053c2" message="Patient ID Is Enrolled"/>
+			</otherwise>
+		</choice>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+</mule>

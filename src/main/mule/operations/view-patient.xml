@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="view-patient-flow" doc:id="fbe0adce-c13b-4cb7-b420-586ec6c956f8" >
+		<logger level="INFO" doc:name="Log Start" doc:id="50335ada-e4ed-4703-af37-fa8fed0aef7f" message="Log Start :: #[attributes.uriParams.patientId]"/>
+		<flow-ref doc:name="Invoke View Patient Subflow" doc:id="e4c9af47-26a3-4336-b4ff-ab32cd9e1adf" name="view-patient-subflow"/>
+		<flow-ref doc:name="Invoke Mapping Flow" doc:id="80fdebdf-634c-4bdd-88c3-7b1ba4481097" name="view-patient-check-empty-payload-flow"/>
+		<logger level="INFO" doc:name="Log End" doc:id="67914bd7-e553-4634-9dbe-9020ee912655" message="Log End :: #[payload]"/>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+	<sub-flow name="view-patient-subflow" doc:id="cf68225f-7302-44d6-af86-cb2859f113bd" >
+		<logger level="INFO" doc:name="Log Request" doc:id="fb3eb1f1-2ca2-4065-b8b9-f37e497ac72b" message="Log Request :: #[attributes.uriParams.patientId]" />
+		<salesforce:query doc:name="View Patient" doc:id="bc3c3ce9-0c26-4e0d-b7fd-20423088bbce" config-ref="apiSalesforceConfig">
+			<salesforce:salesforce-query><![CDATA[${sfdc.viewpatientquery}]]></salesforce:salesforce-query>
+			<salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"patientId" : attributes.uriParams.patientId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<logger level="INFO" doc:name="Log Response" doc:id="b9df8817-986f-4e89-980d-0cf447292927" message="Log Response" />
+	</sub-flow>
+	<flow name="view-patient-check-empty-payload-flow" doc:id="83606fd5-5452-4c63-9b97-4e7e80038010" >
+		<choice doc:name="Choice" doc:id="ae9b81ec-f36b-4fb5-a43f-9cd1073d8022">
+			<when expression="#[isEmpty(payload)]">
+				<raise-error doc:name="No Patient Found" doc:id="42a9c0aa-4870-4fa4-9d60-5facee90084b" type="APP:NO_PATIENT_FOUND" description="No Matched Record Found" />
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Transform Response" doc:id="c343722c-c99d-4a38-a9ae-e970ad160b4b">
+			<ee:message>
+				<ee:set-payload resource="mappings/view-response-mapping.dwl" />
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+</mule>

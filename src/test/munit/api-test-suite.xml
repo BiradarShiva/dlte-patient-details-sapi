@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<munit:config name="api-test-suite.xml" />
+	<import doc:name="Import" doc:id="560f5657-fdcc-4ff0-8c2f-453fcbfc106c" file="test-config.xml" />
+	<munit:test name="api-method-not-allowed-test" doc:id="602f52c5-75b6-40b8-937c-155be7dc8102" description="Test">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="get:\patientprofiles\patients\patient\(patientId):apiKitConfig" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIKIT:METHOD_NOT_ALLOWED Error" doc:id="c7e0493c-4976-4d8a-bc22-3c1940190782" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="apiKitConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="7630f879-2848-4d38-90d7-482eb03d8dec" message='#[%dw 2.0 output application/json --- "payloadLog Execution Start"]'/>
+			<http:request method="GET" doc:name="Request" doc:id="fe3b67be-3e79-4329-b581-8a2061d5a404" config-ref="testHttpRequest" path="${apipath.view}" responseTimeout="60000">
+				<http:uri-params><![CDATA[#[%dw 2.0 output application/json --- readUrl('classpath://in/patientId-attribute-request.json')]]]></http:uri-params>
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+			</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="2256254b-d411-4baf-b0c9-825129aa1918" message="Log Execution End:: #[%dw 2.0 output application/json --- payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="75215d65-5276-4a0a-a346-cb4f9039b350" message="Log Validation Start:: #[%dw 2.0 output application/json --- payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Status Code Is 405" doc:id="c594806d-460c-4624-b8ca-3c04922067e4" is='#[MunitTools::equalTo("405")]' expression="#[%dw 2.0 output application/json --- payload.error.status]"/>
+			<munit-tools:assert-that doc:name="Validate Error Code" doc:id="d0854e40-1e5b-441a-97d8-b2d87ae357fa" expression="#[%dw 2.0 output application/json --- payload.error.code]" is='#[MunitTools::equalTo("METHOD_NOT_ALLOWED")]'/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="439cb119-a23b-4996-a8f2-05ce5598fad6" message="Log Validation End:: #[%dw 2.0 output application/json --- payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="api-not-found-error-test" doc:id="958aeeba-57c3-42a0-8e12-6908c7eca699" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="get:\patientprofiles\patients\patient\(patientId):apiKitConfig" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIKIT:NOT_FOUND" doc:id="8518c757-7624-4e14-ba1d-2ba021c1a0ef" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="apiKitConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="325b9db8-2cba-4c7b-8449-9332b00802f1" message="Log Execution Start"/>
+			<http:request method="GET" doc:name="Request" doc:id="27f1bdb2-ca4b-45fc-b4ae-2f4b3275b6e7" config-ref="testHttpRequest" path="${apipath.view}" responseTimeout="600000">
+				<http:uri-params><![CDATA[#[readUrl('classpath://in/patientId-attribute-request.json')]]]></http:uri-params>
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+			</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="a03d605e-eaa7-4705-a27d-71ba49f03092" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="306b64eb-8d42-4111-a407-ab586d89b6a1" message="Log Validation Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Status Code Is 404" doc:id="1c0b9ed8-0d73-4f19-84bd-767916fdc3a6" is='#[MunitTools::equalTo("404")]' expression="#[payload.error.status]"/>
+			<munit-tools:assert-that doc:name="Validate Error Code" doc:id="d20e16ba-08ad-4b6e-83d6-bb316bf7f87e" expression="#[payload.error.code]" is='#[MunitTools::equalTo("NOT_FOUND")]'/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="69b71e70-1178-4a7d-965b-8758374f40b9" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="api-unsupported-media-type-test" doc:id="b10291b5-813a-4619-8739-3589c9e130b3" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="post:\patientprofiles\patient:application\json:apiKitConfig" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock  APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="006cf128-a4a0-49b9-a871-9eaf8d706e22" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="apiKitConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId=" APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="0fdebcf7-285f-4825-9211-c0b2998f00a0" message="Log Execution Start"/>
+			<http:request method="POST" doc:name="Request" doc:id="7eddd5d4-d3d9-4e11-9cb3-23fd22b80311" config-ref="testHttpRequest" path="${apipath.create}" responseTimeout="600000">
+					<http:body><![CDATA[#[readUrl('classpath://in/create-patient-request.json')]]]></http:body>
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+				</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="b6262d9b-6e02-4783-bf65-4ee9d75a35df" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="7fcd9343-6a77-4c59-8e48-1f7642a0e774" message="Log Validation Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Status Code Is 415" doc:id="95a40c15-bae8-464c-8a6d-cbcad58526ea" is='#[MunitTools::equalTo("415")]' expression="#[payload.error.status]"/>
+			<munit-tools:assert-that doc:name="Validate Error Code" doc:id="3b84aa59-62ef-44b4-a56d-4d1048cea06f" expression="#[payload.error.code]" is='#[MunitTools::equalTo("MEDIA_TYPE_UNSUPPORTED")]'/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="e6b93820-855c-4746-b19b-ae92f9020545" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="api-bad-request-test" doc:id="f05265b1-09f0-4b38-9c51-06a3a81c775a">
+			
+		<munit:enable-flow-sources>	
+		    <munit:enable-flow-source value="post:\patientprofiles\patient:application\json:apiKitConfig" />
+			<munit:enable-flow-source value="api-flow" />
+			</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIKIT:BAD_REQUEST" doc:id="80b77727-a4af-40d4-98b7-7f9151b1e19f" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="apiKitConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="9060bd41-8912-4a0f-83aa-aaf1fd5ed892" message="Log Execution Start"/>
+			<http:request method="GET" doc:name="Request" doc:id="188c081e-6cac-4fc4-bdc8-40d4dbeddd75" path="${apipath.view}" config-ref="testHttpRequest">
+				<http:uri-params><![CDATA[#[readUrl('classpath://in/patientId-attribute-request.json')]]]></http:uri-params>
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+			</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="74a00cd1-2f76-4b5f-beb4-0f839881554a" message="#[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="8199886e-fdec-44b6-bc40-ed41012500d5" message="Log Validation Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Status Is 400" doc:id="bc6e4305-915a-4ed6-bd82-2c2d19e68ecf" is='#[MunitTools::equalTo("400")]' expression="#[payload.error.status]"/>
+			<munit-tools:assert-that doc:name="Validate Error Code" doc:id="46b76225-db5d-4dff-a612-82bd5f9b6916" is='#[MunitTools::equalTo("BAD_REQUEST")]' expression="#[payload.error.code]"/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="65cdf8b3-1e79-494b-a946-a1961b49d646" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+		</munit:test>
+	<munit:test name="api-not-acceptable-test" doc:id="e0da74c4-08ff-4574-bc0e-6d81de6ac41d" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="get:\patientprofiles\patients\patient\(patientId):apiKitConfig" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIKIT:NOT_ACCEPTABLE" doc:id="60ef76c5-9815-45bf-92a1-2704972ff273" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="apiKitConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="53066b86-a9b2-4eb9-9d4b-b7d65e0f3f0f" />
+			<http:request method="GET" doc:name="Request" doc:id="0ba1236d-050c-400e-9f33-bc5d2b86238a" config-ref="testHttpRequest" path="${apipath.view}">
+					<http:uri-params><![CDATA[#[readUrl('classpath://in/patientId-attribute-request.json')]]]></http:uri-params>
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+				</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="142e089d-a360-4a05-896b-310efc974446" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="155e5dcf-fbd3-4e92-871b-c98fcd3d87ec" message="Log Validation Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Status Code Is 406" doc:id="42b513f1-2881-4a6e-839f-ebcead3445aa" is='#[MunitTools::equalTo("406")]' expression="#[payload.error.status]"/>
+			<munit-tools:assert-that doc:name="Validate Error Code" doc:id="1d496c8d-993e-425f-b60c-0beeb7007adf" is='#[MunitTools::equalTo("NOT_ACCEPTABLE")]' expression="#[payload.error.code]"/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="bdd8b6f4-64a9-42a9-b472-4d43f09c8f11" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="api-not-implemented-test" doc:id="eb7b9912-91d9-4601-ade3-0e9aab8bac01" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="get:\patientprofiles\patients\patient\(patientId):apiKitConfig" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIKIT:NOT_IMPLEMENTED" doc:id="465ae5ae-bbb9-40e8-a4f2-535b03f41a80" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="apiKitConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="007d81e9-5d52-4634-afd3-24d28cebf75e" />
+			<http:request method="GET" doc:name="Request" doc:id="7fe79853-eb1f-410b-aec8-3343369de397" config-ref="testHttpRequest" path="${apipath.view}">
+					<http:uri-params><![CDATA[#[readUrl('classpath://in/patientId-attribute-request.json')]]]></http:uri-params>
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+				</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="952abebe-d062-478b-b5ee-0930d638a622" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validations Start" doc:id="115bf9b8-1214-4dde-85c3-707315315301" message="Log Validations Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Status Is 501" doc:id="cee0fcea-b931-4ed6-acf3-9777d740459e" is='#[MunitTools::equalTo("501")]' expression="#[payload.error.status]"/>
+			<munit-tools:assert-that doc:name="Validate Error Code" doc:id="a2058396-734f-460e-80ad-1d9491b91d93" is='#[MunitTools::equalTo("NOT_IMPLEMENTED")]' expression="#[payload.error.code]"/>
+			<logger level="INFO" doc:name="Log Validations End" doc:id="7a99ca72-52f7-4515-8920-100b6d33a3f6" message="Log Validations End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="api-any-error-test" doc:id="b4374de6-6d4f-4999-8ca5-fdd201ca0533" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="get:\patientprofiles\patients\patient\(patientId):apiKitConfig" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIKIT:ANY" doc:id="01aab286-714d-4084-86c1-a61b80ed4fe0" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="apiKitConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="b85c5e06-44ac-48df-8122-bdd6f5bfb6d3" />
+			<http:request method="GET" doc:name="Request" doc:id="01aec9f5-f7bc-4f0b-8799-77cd2b7fcacd" config-ref="testHttpRequest" path="${apipath.view}">
+					<http:uri-params><![CDATA[#[readUrl('classpath://in/patientId-attribute-request.json')]]]></http:uri-params>
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+				</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="763a98d6-1b3a-468e-866a-4656088c6f24" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validations Start" doc:id="640e0e54-d65a-498b-a334-694a920afd52" message="Log Validations Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Status Code Is 500" doc:id="7ee0dc9b-5b25-40ef-9507-f40d7e233ae4" is='#[MunitTools::equalTo("500")]' expression="#[payload.error.status]"/>
+			<munit-tools:assert-that doc:name="Validate Error Code" doc:id="b47551ae-9639-499e-b671-71c453ab4eb1" is='#[MunitTools::equalTo("SERVER_ERROR")]' expression="#[payload.error.code]"/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="782ca00e-ad9f-4940-95a5-b4800638ccc7" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

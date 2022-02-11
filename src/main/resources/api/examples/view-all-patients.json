@@ -1,0 +1,20 @@
+[
+  {
+    "name" : "Mr. Gareth Bale",
+    "gender" : "Male",
+    "age" : 32,
+    "eMail" : "gbale@gmail.com",
+    "phoneNumber" : 8496918241,
+    "dateOfBirth" : "01-01-1990",
+    "patientId" : 2
+  },
+  {
+    "name" : "Mr. Ousmane Dembele",
+    "gender" : "Male",
+    "age" : 27,
+    "eMail" : "odembele@gmail.com",
+    "phoneNumber" : 9901298241,
+    "dateOfBirth" : "01-01-1995",
+    "patientId" : 1
+  }
+]

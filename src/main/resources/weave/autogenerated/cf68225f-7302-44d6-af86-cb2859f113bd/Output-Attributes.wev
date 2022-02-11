@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_cf68225f_7302_44d6_af86_cb2859f113bd_Output_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {| patientId: String |}, 
+  version: String, 
+  localAddress: String
+|}
+

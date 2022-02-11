@@ -1,0 +1,32 @@
+error.patientprofiles.api:
+    badrequest:
+        statusCode: "400"
+        errorCode: "BAD_REQUEST"
+        title: "The request is invalid"
+        description: "The input contains invalid data." 
+        severity: "S3"
+    norecordsfound:
+        statusCode: "404"
+        errorCode: "NO_MATCH"
+        title: "Record not found"
+        description: "The requested record was not found in the end system" 
+        severity: "S3"
+    nopatientidfound:
+        statusCode: "404"
+        errorCode: "NO_ID_FOUND"
+        title: "No Requested ID found"
+        description: "The requested patient ID is not found in the end system for deletion or updation"
+        severity: "S3"
+    nopatientfound:
+        statusCode: "404"
+        errorCode: "NO_PATIENT_FOUND"
+        title: "No Requested patient is enrolled"
+        description: "The requested patient ID is not found in the end system"
+        severity: "S3"
+    default:
+        statusCode: "500"
+        errorCode: "SERVER_ERROR"
+        errorType: "ANY"
+        title: "Internal server error"
+        description: "An unexpected error has occurred"
+        severity: "S3"

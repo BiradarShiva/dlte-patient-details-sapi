@@ -1,0 +1,10 @@
+[
+  {
+    "PhoneNumber__c": 9999967891,
+    "Gender__c": "Male",
+    "PatientId__c": 1006,
+    "Name": "Mr. Gerard Pique",
+    "Age__c": "32.0",
+    "EMail__c": "gpique@gmail.com"
+  }
+]

@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_fdae6253_bf6f_407d_a60a_39606dd49766_Output_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {| patientId: String |}, 
+  version: String, 
+  localAddress: String
+|}
+

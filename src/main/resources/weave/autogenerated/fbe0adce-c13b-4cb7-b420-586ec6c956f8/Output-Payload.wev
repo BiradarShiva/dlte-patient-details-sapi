@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_fbe0adce_c13b_4cb7_b420_586ec6c956f8_Output_Payload = {
+  phoneNumber?: Number, 
+  gender?: String, 
+  patientId?: Number, 
+  name?: String, 
+  age?: Number, 
+  email?: String, 
+  _?: Any
+} {"label": "view-patients"}
+

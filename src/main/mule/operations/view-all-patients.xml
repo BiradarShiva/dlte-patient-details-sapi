@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="view-all-patients-flow" doc:id="5e85286f-8e2b-4975-9a0c-9c157df89afd" >
+		<logger level="INFO" doc:name="Log Start" doc:id="a07c9eb2-b40d-4882-8c14-c852624ad270" message="Log Start :: #[payload]"/>
+		<flow-ref doc:name="Invoke View All Patients Subflow" doc:id="804c156d-471e-4db4-93ca-7dcb9c082387" name="view-all-patients-subflow"/>
+		<flow-ref doc:name="Invoke Empty Check Flow" doc:id="711dac25-9b64-42b2-b0c9-3753d3454b5d" name="view-all-patients-check-empty-payload-flow"/>
+		<logger level="INFO" doc:name="Log End" doc:id="f930cdd0-1bbd-429e-9d00-39b26561f73b" message="Log End :: #[payload]"/>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+	<sub-flow name="view-all-patients-subflow" doc:id="b45dfb18-7ca1-4cce-823c-676dd18f62e3" >
+		<logger level="INFO" doc:name="Log Request" doc:id="9418a833-6ce1-4989-83dc-ac7d8984f86f" message="Log Request  :: #[payload]" />
+		<salesforce:query doc:name="View All Patients" doc:id="6a72cd13-f588-42c9-9b77-a7323f5597ca" config-ref="apiSalesforceConfig">
+			<salesforce:salesforce-query><![CDATA[${sfdc.viewpatientsquery}]]></salesforce:salesforce-query>
+		</salesforce:query>
+		<logger level="INFO" doc:name="Log Response" doc:id="87dd07e2-16f6-42f5-86de-3c0f59eca7c9" message="Log Response :: #[payload]" />
+	</sub-flow>
+	<flow name="view-all-patients-check-empty-payload-flow" doc:id="5b8a642c-3f6b-44bc-b299-2fe8461d4831" >
+		<choice doc:name="Choice" doc:id="5975a742-f8ad-4634-a849-399aea2c70af">
+			<when expression="#[isEmpty(payload)]">
+				<raise-error doc:name="No Records Found" doc:id="19ffde80-1c64-44fb-b7a5-3d0cdd12c376" type="APP:NO_RECORDS_FOUND"/>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Transform Response" doc:id="ca62e2db-5c24-4a21-9e73-f1c3976b10d1">
+			<ee:message>
+						<ee:set-payload resource="mappings/view-response-mapping.dwl" />
+			</ee:message>
+		</ee:transform>
+			</otherwise>
+		</choice>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+</mule>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<munit:config name="view-all-patients-test-suite.xml" />
+	<import doc:name="Import" doc:id="ff57c50c-c7bd-4ab9-8a24-a358aeccb74f" file="test-config.xml" />
+	<munit:test name="view-all-patients-success-test" doc:id="638c8841-ab73-41c6-b254-8ede0ecd1072" description="Test">
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="get:\patientprofiles\patients:apiKitConfig" />
+			<munit:enable-flow-source value="view-all-patients-flow" />
+			<munit:enable-flow-source value="view-all-patients-subflow" />
+			<munit:enable-flow-source value="view-all-patients-check-empty-payload-flow" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Salesforce Query" doc:id="29186788-4a83-4fda-b761-3f85c9d2934f" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6a72cd13-f588-42c9-9b77-a7323f5597ca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[readUrl('classpath://out/view-all-success-mock-payload.json')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="a2cce634-0d12-45d5-9300-d95ff8cad5ee" message="Log Execution Start"/>
+			<http:request method="GET" doc:name="Request" doc:id="8dc310cc-66ec-4818-a617-c82e1e063897" config-ref="testHttpRequest" path="${apipath.viewall}">
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+			</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="5db60190-bd52-4898-804a-1a2ecee1e7ff" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="2f00ff62-1d0c-41ed-9557-7efcad2d992a" message="Log Validation Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Payload Is Not Null" doc:id="ad490673-e4ff-42cb-b131-a2173b8a6751" expression="#[payload]" is='#[MunitTools::equalTo([&#10;  {&#10;    "phoneNumber": 9999967891,&#10;    "gender": "Male",&#10;    "patientId": 1006,&#10;    "name": "Mr. Gerard Pique",&#10;    "age": "32.0",&#10;    "email": "gpique@gmail.com"&#10;  }])]'/>
+			<munit-tools:assert-that doc:name="Assert That Status Code Is 200" doc:id="12990d1c-3c6f-4402-9b1f-6c047af14c57" expression="#[attributes.statusCode]" is="#[MunitTools::equalTo(200)]"/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="3dc00060-4589-479a-bcd7-0972e7cc91d0" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="view-all-patients-type-any-error-test" doc:id="c7a0a8a2-4e9c-4263-843c-b2e3fbeebd8c" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="get:\patientprofiles\patients:apiKitConfig" />
+			<munit:enable-flow-source value="view-all-patients-flow" />
+			<munit:enable-flow-source value="view-all-patients-subflow" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock SALESFORCE TYPE:ANY Error" doc:id="d9954848-6301-484a-930e-dceaf904d348" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6a72cd13-f588-42c9-9b77-a7323f5597ca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="07f66d1f-a12d-4e9a-84fa-2daa1b980fc0" message="Log Execution Start"/>
+			<http:request method="GET" doc:name="Request" doc:id="7cdc94f6-358a-40dc-a3fc-08269f60a8a3" config-ref="testHttpRequest" path="${apipath.viewall}">
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+			</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="373e23ff-cdc7-47c3-b9f8-57dbe8a0495e" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="a5389b73-153e-49de-b401-35dc6c6a9062" message="Log Validation Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Payload Is Not Null " doc:id="f64d2c10-6ec7-416e-bd2a-dff409ccd5cc" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Status Code Is 500" doc:id="eb2a6993-a6d5-4753-8005-1b9d0d3d964b" is='#[MunitTools::equalTo("500")]' expression="#[payload.error.status]"/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="4f22e47f-5d08-4530-9da8-ceb085bfbbe5" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="view-all-patients-no-record-found-error-test" doc:id="33fc9d1b-bdb3-40a5-a851-5a8f53d6b3ab" >
+		<munit:enable-flow-sources >
+			<munit:enable-flow-source value="api-flow" />
+			<munit:enable-flow-source value="view-all-patients-flow" />
+			<munit:enable-flow-source value="view-all-patients-subflow" />
+			<munit:enable-flow-source value="view-all-patients-check-empty-payload-flow" />
+		</munit:enable-flow-sources>
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock View All Patients Query" doc:id="7aa0063d-e092-4ba7-b410-6601d8dd781e" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6a72cd13-f588-42c9-9b77-a7323f5597ca" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[readUrl('classpath://out/view-norecordfound-payload.json')]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<logger level="INFO" doc:name="Log Execution Start" doc:id="97728066-8809-4193-b280-f896f7581d12" />
+			<http:request method="GET" doc:name="Request" doc:id="c63e7468-e05b-43ac-a45d-b28e08fa9e4c" config-ref="testHttpRequest" path="${apipath.viewall}" >
+				<http:response-validator >
+					<http:success-status-code-validator values="0..599" />
+				</http:response-validator>
+			</http:request>
+			<logger level="INFO" doc:name="Log Execution End" doc:id="3fde16bb-be57-4203-abbb-d5ce0503f616" message="Log Execution End:: #[payload]"/>
+		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Log Validation Start" doc:id="7de708f1-0089-48e6-b6f8-c359f31d08d3" message="Log Validation Start:: #[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Payload Is Not Null" doc:id="ed2d706c-1108-4743-bdcb-91b2ca30f7eb" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+			<munit-tools:assert-that doc:name="Assert That Error Code Is 404" doc:id="04e8cb99-2fcb-4d54-b5a5-7293b9ede14e" is='#[MunitTools::equalTo("404")]' expression="#[payload.error.status]"/>
+			<logger level="INFO" doc:name="Log Validation End" doc:id="60de3bfd-7542-491c-a9e9-d840e4880a2f" message="Log Validation End:: #[payload]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

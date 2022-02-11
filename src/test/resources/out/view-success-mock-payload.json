@@ -1,0 +1,12 @@
+[
+  {
+    "Age__c": "32.0",
+    "PhoneNumber__c": "8880888999",
+    "EMail__c": "ehazard@gmail.com",
+    "Gender__c": "Male",
+    "Id": "a005g000031dYN3AAM",
+    "type": "Patient_Profile__c",
+    "PatientId__c": "1008",
+    "Name": "Mr. Edan Hazard"
+  }
+]

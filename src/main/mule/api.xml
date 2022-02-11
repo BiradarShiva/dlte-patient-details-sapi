@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+    
+    <flow name="api-flow">
+        <http:listener config-ref="apiHttpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="apiKitConfig" />
+		<error-handler ref="apikit-error-handler" />
+       
+    </flow>
+    <flow name="patch:\patientprofiles\patient\(patientId)\phonenumber:apiKitConfig">
+		<flow-ref doc:name="Invoke Update Patient Flow" doc:id="9ef5fc5b-4d8f-450b-909d-e57aa30fdef5" name="update-patient-flow"/>
+		<error-handler ref="patientprofiles-error-handler" />
+    </flow>
+    <flow name="get:\patientprofiles\patients:apiKitConfig">
+		<flow-ref doc:name="Invoke View All Patients Flow" doc:id="3f239054-49a6-455e-be4c-168c0a37435f" name="view-all-patients-flow"/>
+		<error-handler ref="patientprofiles-error-handler" />
+    </flow>
+    <flow name="get:\patientprofiles\patients\patient\(patientId):apiKitConfig">
+		<flow-ref doc:name="Invoke View Patient Flow" doc:id="e9f9649a-46b6-4539-9e32-3881cc8fe7fe" name="view-patient-flow"/>
+		<error-handler ref="patientprofiles-error-handler" />
+    </flow>
+    <flow name="post:\patientprofiles\patient:application\json:apiKitConfig">
+		<flow-ref doc:name="Invoke Create Patient Flow" doc:id="2cde0ff8-ca86-4b20-8709-7e57335300eb" name="create-patient-flow" />
+		<error-handler ref="patientprofiles-error-handler" />
+    </flow>
+	<flow name="delete:\patientprofiles\patient\(patientId):apiKitConfig" doc:id="ec96f433-3a21-4eb3-bbeb-8c9b543b5c73" >
+		<flow-ref doc:name="Invoke Delete Patient Flow" doc:id="45249cb3-2945-403c-bd96-1bf6cec0946f" name="delete-patient-flow"/>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+</mule>

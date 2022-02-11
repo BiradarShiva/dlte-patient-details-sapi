@@ -1,0 +1,9 @@
+{
+  "name" : "Mr. Gareth Bale",
+  "gender" : "Male",
+  "age" : 32,
+  "eMail" : "gbale@gmail.com",
+  "phoneNumber" : 8496918241,
+  "dateOfBirth" : "01-01-1990",
+  "patientId" : 1
+}

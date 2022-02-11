@@ -1,0 +1,55 @@
+error.apikit:
+    badrequest:
+        statusCode: "400"
+        errorCode: "BAD_REQUEST"
+        title: "The request is invalid"
+        description: "The input contains invalid data"
+        severity: "S2"
+    unauthorized:
+        statusCode: "401"
+        errorCode: "UNAUTHORIZED"
+        title: "Unauthorized"
+        description: "This endpoint requires all requests to be authenticated"
+        severity: "S2"
+    notfound:
+        statusCode: "404"
+        errorCode: "NOT_FOUND"
+        title: "Resource not found"
+        description: "The requested resource was not found"
+        severity: "S2"
+    methodnotallowed:
+        statusCode: "405"
+        errorCode: "METHOD_NOT_ALLOWED"
+        title: "HTTP method not allowed"
+        description: "The http method requested is not allowed" 
+        severity: "S2"
+    notacceptable:
+        statusCode: "406"
+        errorCode: "NOT_ACCEPTABLE"
+        title: "Not accepted"
+        description: "The provided 'accept' http-header does not match the response type"
+        severity: "S2"      
+    mediatypeunsupported:
+        statusCode: "415"
+        errorCode: "MEDIA_TYPE_UNSUPPORTED"
+        title: "Invalid media type"
+        description: "Request media type is not supported"
+        severity: "S2"     
+    notimplemented:
+        statusCode: "501"
+        errorCode: "NOT_IMPLEMENTED"
+        title: "Not implemented"
+        description: "The requested method is not recognised"   
+        severity: "S2"
+    timeout:
+        statusCode: "504"
+        errorCode: "TIMEOUT"
+        title: "Timeout"
+        description: "Timeout exceeded"    
+        severity: "S2"    
+    default:
+        statusCode: "500"
+        errorCode: "SERVER_ERROR"
+        title: "Internal server error"
+        description: "The server encountered an unexpected condition which prevented it from fulfilling the request"          
+        severity: "S2"

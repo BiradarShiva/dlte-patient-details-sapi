@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="delete-patient-flow" doc:id="af21a17e-c381-4a52-8f56-de56f9fb92de" >
+		<logger level="INFO" doc:name="Log Start" doc:id="88e56ca5-3aec-4f42-99fe-fe7fa86006d5" message="Log Start :: #[attributes.uriParams.patientId]"/>
+		<flow-ref doc:name="Invoke Retrieve Unique ID Subflow" doc:id="d53e85ab-b3ca-4712-855f-232580a45cba" name="retrieve-unique-id-subflow"/>
+		<choice doc:name="Choice" doc:id="73255a3b-f377-4c44-a643-0cad44b271ad" >
+			<when expression="#[!isEmpty(payload.error.status)]">
+				<logger level="INFO" doc:name="Log Error" doc:id="cf0df4f2-ab8b-4fd3-a347-43f21bedb216" message="Patient ID Is Not Found"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Id" doc:id="7cbeaea8-344d-48c0-904a-b1b96f6dc06c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[payload[0].Id]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<flow-ref doc:name="Invoke Delete Patient Subflow" doc:id="4fd783ca-0f70-4486-9f5c-ac584ca2ba21" name="delete-patient-subflow" />
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Response" doc:id="346503a1-3b9a-455c-8337-e7aee5509bd1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log End" doc:id="35f6a0be-10f1-448d-b3f4-8944289e4298" message="Log End :: #[payload]"/>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+	<sub-flow name="delete-patient-subflow" doc:id="acf26f42-789b-4165-9339-a400786e7fc3" >
+		<logger level="INFO" doc:name="Log Request " doc:id="2b2f315a-1a81-4879-afc9-31e87e334448" message="Request :: #[payload]"/>
+		<salesforce:delete doc:name="Erase Patient From Records" doc:id="834a120a-3a7f-485b-ac4e-5e3ae9bc13c8" config-ref="apiSalesforceConfig" />
+		<logger level="INFO" doc:name="Log Response" doc:id="a1131d11-50cf-4cef-b29b-087bb57620a6" message="Log Response :: #[payload]" />
+	</sub-flow>
+</mule>

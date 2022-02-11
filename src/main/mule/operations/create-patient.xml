@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="create-patient-flow" doc:id="7c02a8ef-4fcf-446b-b604-4a67d6694caa" >
+		<logger level="INFO" doc:name="Log Start" doc:id="c559400e-7bfb-4ab7-ac28-455fcaa4f8a4" message="Log Start :: #[payload]"/>
+		<flow-ref doc:name="Invoke Create Patient Subflow" doc:id="a95ec03d-51f3-4f01-840b-01fe6f628c7f" name="create-patient-subflow"/>
+		<ee:transform doc:name="Transform Response" doc:id="5994988d-770c-4a1f-a172-47928ee7a55b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log End" doc:id="48f87b89-a536-4e2d-a17c-05a87c2a4ab6" message="Log End :: #[payload]"/>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+	<sub-flow name="create-patient-subflow" doc:id="7d42ca69-8474-4413-8920-0a451cf65da5" >
+		<logger level="INFO" doc:name="Log Request" doc:id="d135cd03-f2a4-41d4-9433-82aa0504125c" message="Log Request :: #[payload]" />
+		<salesforce:create doc:name="Create Patient Record " doc:id="4ab552ba-ec62-4f84-9dae-ee5a87c7173e" config-ref="apiSalesforceConfig" type="${sfdc.object}" >
+		</salesforce:create>
+		<logger level="INFO" doc:name="Log Response " doc:id="cc6f7923-fbe0-4136-91dd-cfbbd5e3e817" message="Log Response :: #[payload]" />
+	</sub-flow>
+</mule>
