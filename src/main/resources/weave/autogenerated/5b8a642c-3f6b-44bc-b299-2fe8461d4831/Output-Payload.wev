@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_5b8a642c_3f6b_44bc_b299_2fe8461d4831_Output_Payload = Array<{  phoneNumber?: Number,   gender?: String,   patientId?: Number,   name?: String,   age?: Number,   email?: String,   _?: Any} {"label": "view-patients"}>
+

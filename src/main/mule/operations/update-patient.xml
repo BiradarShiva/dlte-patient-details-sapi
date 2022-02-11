@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="update-patient-flow" doc:id="a4046b2e-0fdd-4718-a2db-61b22c8ceaf6" >
+		<logger level="INFO" doc:name="Log Start" doc:id="118abb8b-fb5d-496b-9885-676b903da0c1" message="Log Start :: #[attributes.uriParams.patientId]"/>
+		<set-variable value="#[attributes.queryParams.phoneNumber]" doc:name="Set phoneNumber" doc:id="7e6ed020-a2e5-4f99-a809-69188d418cb6" variableName="phoneNumber"/>
+		<flow-ref doc:name="Invoke Retrieve Unique ID Subflow" doc:id="7b611d2b-48f3-480c-a40c-7dd68fdd6b74" name="retrieve-unique-id-subflow"/>
+		<choice doc:name="Choice" doc:id="827e87e7-5715-4f2e-8f65-9c8a1767f749" >
+			<when expression="#[!isEmpty(payload.error.status)]">
+				<logger level="INFO" doc:name="Log Error" doc:id="fb43613c-693b-4041-91b1-247692cdcacf" message="Patient ID Is Not Found"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Update Request" doc:id="1c12a080-b87e-4525-b211-b0b39b689437">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	Id: payload[0].Id as String,
+	PhoneNumber__c: vars.phoneNumber as Number
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<flow-ref doc:name="Invoke Update Patient Subflow" doc:id="bc0842fc-fec3-45f1-85ff-f3ecbb6dea31" name="update-patient-subflow" />
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Transform Response" doc:id="c0fa65d0-3363-4d1f-9a4a-d9c247a83f92" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log End" doc:id="5503da63-516a-41eb-af9c-23b4bbd5eb56" message="Log End :: #[payload]"/>
+		<error-handler ref="patientprofiles-error-handler" />
+	</flow>
+	<sub-flow name="update-patient-subflow" doc:id="fdae6253-bf6f-407d-a60a-39606dd49766" >
+		<logger level="INFO" doc:name="Log Request" doc:id="d4f22c9f-bd18-4f74-af36-08e7843ece15" message="Log Request :: #[payload]"/>
+		<salesforce:update type="${sfdc.object}" doc:name="Update Patient Phone Number" doc:id="90fe1e4f-86f2-4870-bb2a-60e951c61b3a" config-ref="apiSalesforceConfig" />
+		<logger level="INFO" doc:name="Log Response " doc:id="470cad12-b31a-4012-ad96-0392b6c365ce" message="Log Response  :: #[payload]"/>
+	</sub-flow>
+</mule>

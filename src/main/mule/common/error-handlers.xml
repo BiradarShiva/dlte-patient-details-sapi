@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	 <error-handler name="apikit-error-handler">
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="a238fdb2-bd58-495c-84fc-9d3d871989f5" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.badrequest.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.badrequest.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.badrequest.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.badrequest.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.badrequest.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="81829d9c-2c6e-47bf-8e26-b601f8d20fbd" name="set-exception-response-subflow" />
+
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="b15980b4-9cfd-453a-9292-dc3e078f27d3" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notfound.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notfound.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notfound.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notfound.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notfound.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="8dcf35e6-d081-464a-85bb-c9213eba2802" name="set-exception-response-subflow" />
+
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="eb91f104-abd8-40a7-b57c-afb2305da927" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.methodnotallowed.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.methodnotallowed.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.methodnotallowed.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.methodnotallowed.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.methodnotallowed.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="6b6c36cf-cd49-4267-a9e3-99a993dcf6f5" name="set-exception-response-subflow" />
+
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="33db01ca-1cb4-4c84-af59-8c8322d1089f" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notacceptable.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notacceptable.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notacceptable.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notacceptable.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notacceptable.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="e46dd58f-9dec-44e1-919b-b0696b03b239" name="set-exception-response-subflow" />
+
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="1141690b-fe88-4476-9419-14613082314d" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.mediatypeunsupported.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.mediatypeunsupported.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.mediatypeunsupported.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.mediatypeunsupported.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.mediatypeunsupported.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="95a65236-cbd4-45cb-8294-393d6afa9e49" name="set-exception-response-subflow" />
+
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="b9b41abc-ce01-497b-8496-0e5b3dc5c41b" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notimplemented.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notimplemented.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notimplemented.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notimplemented.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.notimplemented.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="9f5d0b49-6ce3-44e6-bbd1-680d154fe2a3" name="set-exception-response-subflow" />
+
+            </on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="49f39af5-7569-4e91-90e9-3ebabb2ac835" type="ANY">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="c9f72400-a7b2-4a09-83a9-c47b75846405" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.default.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.default.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.default.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.default.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.apikit.default.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="ee5bd837-5e48-43f4-9490-5b5d4c509ffa" name="set-exception-response-subflow" />
+		</on-error-propagate>
+        
+</error-handler>
+	<error-handler name="patientprofiles-error-handler" doc:id="1327908a-21d9-4f93-a480-17e8790e8b5a" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="52705848-b0cf-4541-8fa3-e501abd6bf39" type="APP:NO_RECORDS_FOUND">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="83a5aab1-7538-4764-be61-e44f967edce6" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.norecordsfound.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.norecordsfound.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.norecordsfound.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.norecordsfound.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.norecordsfound.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="23ee8356-9ae3-498c-9f96-4fba6b537470" name="set-exception-response-subflow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d4c73541-1a02-4d01-912d-4dcdcee578b8" type="APP:NO_ID_FOUND">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="b4244fa5-6a8f-4107-bfc7-885e4cabd4d2" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientidfound.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientidfound.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientidfound.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientidfound.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientidfound.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="fcbd77c6-0b1e-439c-91a3-ab8a6b6e4cee" name="set-exception-response-subflow" />
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6ad49d73-ae2a-44e0-8100-4750305d67d5" type="APP:NO_PATIENT_FOUND">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="85779894-16ed-45a9-aeda-0e1f5a2ed41b" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientfound.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientfound.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientfound.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientfound.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.nopatientfound.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="d5218fa6-327f-4e1b-a9b2-274b7e756c98" name="set-exception-response-subflow" />
+		</on-error-continue>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="89cb8933-5c84-4438-8d55-3212b1ff9f70" type="ANY">
+			<ee:transform doc:name="Set Variable -  errorStatus, errorCode, errorTitle, errorDetails, errorSeverity" doc:id="305ce98b-54f5-4672-bc7b-0b26bbe631d9" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+				<ee:message />
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+					<ee:set-variable variableName="errorStatus" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.default.statusCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorCode" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.default.errorCode')]]></ee:set-variable>
+					<ee:set-variable variableName="errorTitle" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.default.title')]]></ee:set-variable>
+					<ee:set-variable variableName="errorSeverity" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.default.severity')]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+p('error.patientprofiles.api.default.description')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="Set Exception Response Payload" doc:id="9e094bb5-1b84-4049-8a06-761f07e7cbe8" name="set-exception-response-subflow" />
+		</on-error-propagate>
+	</error-handler>
+	<sub-flow name="set-exception-response-subflow" doc:id="700849e9-3ea4-4a74-892f-9174c910a6fb" >
+		<ee:transform doc:name="Map Exception Response Payload" doc:id="143a23d4-247a-40de-aed7-7be0a948da8b" >
+			<ee:message >
+				<ee:set-payload resource="mappings/exception-response-mapping.dwl" />
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[vars.errorStatus]" doc:name="Set httpStatus" doc:id="dc4528dc-2661-40b7-9775-6f00ece737ca" variableName="httpStatus" />
+	</sub-flow>
+  
+	
+</mule>

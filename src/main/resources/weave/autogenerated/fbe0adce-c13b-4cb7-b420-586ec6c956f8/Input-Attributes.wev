@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_fbe0adce_c13b_4cb7_b420_586ec6c956f8_Input_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {| patientId: String |}, 
+  version: String, 
+  localAddress: String
+|}
+

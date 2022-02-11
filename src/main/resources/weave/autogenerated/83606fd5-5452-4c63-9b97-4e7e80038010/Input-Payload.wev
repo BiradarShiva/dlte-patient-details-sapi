@@ -1,0 +1,15 @@
+%dw 2.0
+
+type auto_83606fd5_5452_4c63_9b97_4e7e80038010_Input_Payload = Array<patient_profile__c>
+type patient_profile__c = {|
+  Age__c?: Number {"typeId": "Age__c"}, 
+  EMail__c?: String {"typeId": "EMail__c"}, 
+  Gender__c?: String {"typeId": "Gender__c"}, 
+  Name?: String {"typeId": "Name"}, 
+  PatientId__c?: String {"typeId": "PatientId__c"}, 
+  PhoneNumber__c?: String {"typeId": "PhoneNumber__c"}
+|} {"label": "Patient Profile",
+"typeId": "patient_profile__c"}
+
+
+

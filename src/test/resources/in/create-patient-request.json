@@ -1,0 +1,8 @@
+[{
+  "Name" : "Mr. Gareth Bale",
+  "Gender__c" : "Male",
+  "Age__c" : 32,
+  "EMail__c" : "gbale@gmail.com",
+  "PhoneNumber__c" : 8496918241,
+  "DateOfBirth__c" : "01-01-1990"
+}]

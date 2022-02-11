@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="apiHttpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.port}" />
+    </http:listener-config>
+    <apikit:config name="apiKitConfig" api="dlte-patient-details-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<salesforce:sfdc-config name="apiSalesforceConfig" doc:name="Salesforce Config" doc:id="2a4f475e-1753-4c88-9584-c6476a657dcc" >
+		<salesforce:basic-connection username="${secure::sfdc.username}" password="${secure::sfdc.password}" securityToken="${secure::sfdc.token}" />
+	</salesforce:sfdc-config>
+	<configuration-properties doc:name="appSecrets" doc:id="16062cee-55ef-460b-9c9f-c912274d0d75" file="properties\app-secrets.yaml" />
+	<configuration doc:name="apikitGlobalConfiguration" doc:id="3e08cc15-a091-4338-9022-9e154c20546c" defaultErrorHandler-ref="apikit-error-handler" />
+	<configuration-properties doc:name="apikitErrors" doc:id="466b725b-fcfb-404a-9390-c1b99cfd8262" file="properties\apikit-errors.yaml" />
+	<configuration-properties doc:name="appErrors" doc:id="9800192f-f660-4b18-b221-cdc5cacd598c" file="properties\app-errors.yaml" />
+	<configuration-properties doc:name="appProperties" doc:id="6bebe93f-98f6-442b-b52f-1f544cba93c4" file="properties\app-properties.yaml" />
+	<configuration-properties doc:name="appConstants" doc:id="a9868af4-be2f-41e3-8fcd-d386e19abc28" file="properties\app-constants.yaml" />
+	<secure-properties:config name="securePropertiesConfig" doc:name="Secure Properties Config" doc:id="3fe13d64-8726-4e86-a95b-fdc8a54eacf9" file="properties\app-secrets.yaml" key="${secret.key}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	
+</mule>

@@ -1,0 +1,10 @@
+http:
+  host: "localhost"
+  port: "8083"
+  
+apipath:
+  create: "/api/patientprofiles/patient"
+  update: "/api/patientprofiles/patient/{patientId}/phonenumber"
+  view: "/api/patientprofiles/patients/patient/{patientId}"
+  viewall: "/api/patientprofiles/patients"
+  erase: "/api/patientprofiles/patient/{patientId}" 
